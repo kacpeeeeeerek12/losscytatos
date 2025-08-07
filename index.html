@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cytat Dnia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #9fc6e2;
+      font-family: sans-serif;
+      color: black;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      border: 1px solid #ccc;
+      backdrop-filter: blur(6px);
+      transition: box-shadow 0.4s ease;
+    }
+
+    .container:hover {
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #1e3a8a;
+    }
+
+    #quoteBox {
+      background: radial-gradient(circle at center, #3b5998, #5a8dee);
+      color: white;
+      padding: 20px 18px;
+      border-radius: 12px;
+      margin-top: 18px;
+      min-height: 100px;
+      font-size: 18px;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      user-select: none;
+    }
+
+    button {
+      background: radial-gradient(circle at center, #3b5998, #5a8dee);
+      color: white;
+      margin-top: 25px;
+      cursor: pointer;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 18px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(12px);
+      animation: pulseWhite 2.5s infinite ease-in-out;
+      user-select: none;
+      display: block;
+      width: 100%;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+      animation: none;
+    }
+
+    #countdown {
+      margin-top: 18px;
+      color: #1e3a8a;
+      font-weight: bold;
+      text-align: center;
+      font-style: italic;
+      min-height: 28px;
+      user-select: none;
+    }
+
+    .info-box {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      font-style: italic;
+      user-select: none;
+    }
+
+    #streakInfo {
+      margin-top: 20px;
+      font-weight: 600;
+      color: #15418e;
+      text-align: center;
+      font-size: 17px;
+      user-select: none;
+    }
+
+    #medalsSection {
+      margin-top: 30px;
+      padding: 20px 25px;
+      background: #e8f0fe; /* jasnoniebieskie tło */
+      border-radius: 18px;
+      box-shadow: 0 6px 15px rgba(30, 58, 138, 0.15);
+      border: 2px solid #1e3a8a;
+      font-size: 16px;
+      color: #1e3a8a;
+      user-select: none;
+    }
+
+    #medalsSection h3 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: 700;
+      font-size: 22px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .medal-row {
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      border-bottom: 1px solid #a8b8d9;
+      padding-bottom: 6px;
+    }
+
+    .medal-row:last-child {
+      border-bottom: none;
+    }
+
+    .progress {
+      font-weight: 700;
+      color: #15418e;
+    }
+
+    #currentMedal {
+      margin-top: 18px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #1e3a8a;
+      user-select: none;
+    }
+
+    @keyframes pulseWhite {
+      0%, 100% {
+        background: radial-gradient(circle at center, #3b5998, #5a8dee);
+        color: white;
+        filter: brightness(1);
+      }
+      50% {
+        filter: brightness(1.3);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cytat Dnia</h1>
+
+    <div id="quoteBox">Kliknij poniżej, aby wylosować cytat na dziś!</div>
+
+    <button id="drawBtn" onclick="drawQuote()">Losuj Cytat</button>
+
+    <div id="countdown"></div>
+    <div id="streakInfo"></div>
+
+    <div id="medalsSection" class="info-box">
+      <h3>Misje i Medale:</h3>
+      <div class="medal-row">Medal Wytrwałości (2 dni passy): <span id="m1" class="progress">0/2</span></div>
+      <div class="medal-row">Medal Brązowy (4 dni passy): <span id="m2" class="progress">0/4</span></div>
+      <div class="medal-row">Medal Miedziany (7 dni passy): <span id="mNew" class="progress">0/7</span></div>
+      <div class="medal-row">Medal Srebrny (10 dni passy): <span id="m3" class="progress">0/10</span></div>
+      <div class="medal-row">Medal Złoty (15 dni passy): <span id="m4" class="progress">0/15</span></div>
+      <div class="medal-row">Medal Platynowy (20 dni passy): <span id="m5" class="progress">0/20</span></div>
+      <div class="medal-row">Medal Szafirowy (25 dni passy): <span id="m6" class="progress">0/25</span></div>
+      <div class="medal-row">Medal Rubinowy (35 dni passy): <span id="m7" class="progress">0/35</span></div>
+      <div class="medal-row">Medal Diamentowy (45 dni passy): <span id="m8" class="progress">0/45</span></div>
+      <div class="medal-row">Medal Legendy (55 dni passy): <span id="m9" class="progress">0/55</span></div>
+      <div class="medal-row">Medal Tytanowy (70 dni passy): <span id="m10" class="progress">0/70</span></div>
+      <p style="margin-top:15px; font-style: italic; text-align: center;">Więcej medali wkrótce...</p>
+    </div>
+
+    <div id="currentMedal">Posiadasz medal: brak medalu</div>
+  </div>
+
+  <script>
+    const quotes = [
+      "Bóg jest miłością. (1 J 4,8)",
+      "Ufaj Panu z całego swojego serca. (Prz 3,5)",
+      "Pan jest moim pasterzem, niczego mi nie braknie. (Ps 23,1)",
+      "Miłość cierpliwa jest, łaskawa jest. (1 Kor 13,4)",
+      "Wszystko mogę w tym, który mnie umacnia. (Flp 4,13)",
+      "Szukajcie najpierw Królestwa Bożego. (Mt 6,33)",
+      "Przebaczajcie sobie nawzajem. (Ef 4,32)",
+      "Niech wasza mowa będzie: tak, tak; nie, nie. (Mt 5,37)",
+      "Zaufaj Panu i czyń dobrze. (Ps 37,3)",
+      "Pan jest blisko wszystkich, którzy go wzywają. (Ps 145,18)",
+      "Bądźcie mocni i mężni. (Joz 1,9)",
+      "Nie lękaj się, bo Ja jestem z tobą. (Iz 41,10)",
+      "Przyjdźcie do mnie wszyscy, którzy utrudzeni jesteście. (Mt 11,28)",
+      "Błogosławieni czystego serca, albowiem oni Boga oglądać będą. (Mt 5,8)",
+      "Pokój zostawiam wam, pokój mój daję wam. (J 14,27)"
+    ];
+
+    // Ładowanie danych passy z localStorage lub zerowanie jeśli brak
+    let streakData = JSON.parse(localStorage.getItem('streakData')) || {
+      lastDrawDate: null,
+      streak: 0,
+      medals: {
+        m1: false,
+        m2: false,
+        mNew: false,
+        m3: false,
+        m4: false,
+        m5: false,
+        m6: false,
+        m7: false,
+        m8: false,
+        m9: false,
+        m10: false
+      }
+    };
+
+    const medalsThresholds = {
+      m1: 2,
+      m2: 4,   // Brązowy medal za 4 dni
+      mNew: 7, // Nowy medal miedziany za 7 dni
+      m3: 10,
+      m4: 15,
+      m5: 20,
+      m6: 25,
+      m7: 35,
+      m8: 45,
+      m9: 55,
+      m10: 70
+    };
+
+    const medalsNames = {
+      m1: "Medal Wytrwałości",
+      m2: "Medal Brązowy",
+      mNew: "Medal Miedziany",
+      m3: "Medal Srebrny",
+      m4: "Medal Złoty",
+      m5: "Medal Platynowy",
+      m6: "Medal Szafirowy",
+      m7: "Medal Rubinowy",
+      m8: "Medal Diamentowy",
+      m9: "Medal Legendy",
+      m10: "Medal Tytanowy"
+    };
+
+    function drawQuote() {
+      const now = new Date();
+      const today = now.toISOString().split('T')[0];
+
+      if (streakData.lastDrawDate === today) {
+        alert("Już dziś wylosowałeś cytat. Spróbuj jutro.");
+        return;
+      }
+
+      const quoteIndex = Math.floor(Math.random() * quotes.length);
+      const quote = quotes[quoteIndex];
+
+      document.getElementById("quoteBox").textContent = quote;
+      streakData.lastDrawDate = today;
+
+      updateStreak(today);
+      updateMedalsUI();
+      updateCountdown();
+      localStorage.setItem('streakData', JSON.stringify(streakData));
+
+      document.getElementById("drawBtn").disabled = true;
+    }
+
+    function updateStreak(today) {
+      if (!streakData.lastDrawDate) {
+        streakData.streak = 1;
+      } else {
+        const lastDate = new Date(streakData.lastDrawDate);
+        const currentDate = new Date(today);
+        const diffTime = currentDate.getTime() - lastDate.getTime();
+        const diffDays = diffTime / (1000 * 3600 * 24);
+
+        if (diffDays === 1) {
+          streakData.streak += 1;
+        } else if (diffDays > 1) {
+          streakData.streak = 1; // reset passy
+          // Reset medali?
+          for (let medal in streakData.medals) {
+            streakData.medals[medal] = false;
+          }
+        }
+      }
+      streakData.lastDrawDate = today;
+
+      document.getElementById("streakInfo").textContent = "Twoja passa: " + streakData.streak + " dni";
+    }
+
+    function updateMedalsUI() {
+      for (const medal in medalsThresholds) {
+        const el = document.getElementById(medal);
+        if (streakData.streak >= medalsThresholds[medal]) {
+          el.textContent = `${medalsThresholds[medal]}/${medalsThresholds[medal]} (Zdobyty)`;
+          el.style.color = "#15418e";
+          streakData.medals[medal] = true;
+        } else {
+          el.textContent = `${streakData.streak}/${medalsThresholds[medal]}`;
+          el.style.color = "#a0a0a0";
+        }
+      }
+
+      // Wyświetlanie najwyższego zdobytego medalu
+      let currentMedal = "brak medalu";
+      const orderedMedals = Object.entries(medalsThresholds).sort((a,b) => b[1] - a[1]);
+      for (const [medalKey, threshold] of orderedMedals) {
+        if (streakData.streak >= threshold) {
+          currentMedal = medalsNames[medalKey] + ` (${threshold} dni)`;
+          break;
+        }
+      }
+      document.getElementById('currentMedal').textContent = "Posiadasz medal: " + currentMedal;
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24,0,0,0);
+
+      const diff = nextMidnight - now;
+      let seconds = Math.floor(diff / 1000);
+      const hours = Math.floor(seconds / 3600);
+      seconds %= 3600;
+      const minutes = Math.floor(seconds / 60);
+      seconds %= 60;
+
+      const formatted = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+
+      document.getElementById('countdown').textContent = "Następny los za: " + formatted;
+
+      // Jeśli dzisiaj już losowano, zablokuj przycisk do północy
+      const today = new Date().toISOString().split('T')[0];
+      if (streakData.lastDrawDate === today) {
+        document.getElementById("drawBtn").disabled = true;
+      } else {
+        document.getElementById("drawBtn").disabled = false;
+      }
+    }
+
+    // Przy starcie strony:
+    window.onload = function() {
+      // Pokaż ostatni cytat (jeśli chcesz, można zapisać ostatni cytat w localStorage)
+      // Aktualizuj informacje o passie i medalach
+      updateStreak(streakData.lastDrawDate);
+      updateMedalsUI();
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    };
+  </script>
+</body>
+</html>
